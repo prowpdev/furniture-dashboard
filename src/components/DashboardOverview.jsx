@@ -2,13 +2,11 @@ import React from 'react';
 import { 
   DollarSign, 
   Package, 
-  TrendingUp, 
   AlertCircle, 
   Truck, 
   ArrowUpRight, 
   ShoppingCart,
   Boxes,
-  Clock,
   Sparkles,
   ChevronRight
 } from 'lucide-react';
@@ -22,25 +20,12 @@ import {
   CartesianGrid, 
   PieChart, 
   Pie, 
-  Cell, 
-  Legend 
+  Cell
 } from 'recharts';
-import { FurnitureItem, Order, BusinessProfile } from '../types';
-
-interface DashboardOverviewProps {
-  inventory: FurnitureItem[];
-  orders: Order[];
-  profile: BusinessProfile;
-  onNavigateToInventory: () => void;
-  onNavigateToSales: () => void;
-  onNavigateToPOS: () => void;
-  onOpenRestockModal: (item: FurnitureItem) => void;
-  onViewOrderInvoice: (order: Order) => void;
-}
 
 const CATEGORY_COLORS = ['#d97706', '#059669', '#2563eb', '#7c3aed', '#db2777', '#4b5563'];
 
-export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
+export const DashboardOverview = ({
   inventory,
   orders,
   profile,
@@ -62,7 +47,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
   const lowStockItems = inventory.filter(i => i.stock <= i.minStockAlert && i.status !== 'discontinued');
   const activeDeliveries = orders.filter(o => o.orderStatus === 'in_transit' || o.orderStatus === 'scheduled');
 
-  // Chart Data: Monthly Performance (Simulated from existing orders + realistic trend)
+  // Chart Data: Monthly Performance
   const monthlyData = [
     { month: 'Apr', sales: 14200, profit: 8100 },
     { month: 'May', sales: 18900, profit: 10400 },
@@ -72,7 +57,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
   ];
 
   // Category breakdown data
-  const categoryMap: { [key: string]: number } = {};
+  const categoryMap = {};
   orders.forEach(ord => {
     if (ord.orderStatus === 'cancelled') return;
     ord.items.forEach(item => {
@@ -88,7 +73,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
   }));
 
   // Top selling products
-  const productSalesMap: { [id: string]: { name: string; count: number; revenue: number; image: string; sku: string } } = {};
+  const productSalesMap = {};
   orders.forEach(ord => {
     if (ord.orderStatus === 'cancelled') return;
     ord.items.forEach(item => {
@@ -110,7 +95,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
     .sort((a, b) => b.revenue - a.revenue)
     .slice(0, 4);
 
-  // Recent 4 orders
+  // Recent 5 orders
   const recentOrders = [...orders]
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
     .slice(0, 5);
@@ -305,7 +290,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
                 <XAxis dataKey="month" stroke="#78716c" fontSize={12} tickLine={false} />
                 <YAxis stroke="#78716c" fontSize={12} tickFormatter={(val) => `$${val / 1000}k`} tickLine={false} />
                 <Tooltip 
-                  formatter={(val: any) => [`${profile.currency}${Number(val).toLocaleString()}`, '']}
+                  formatter={(val) => [`${profile.currency}${Number(val).toLocaleString()}`, '']}
                   contentStyle={{ backgroundColor: '#1c1917', borderColor: '#292524', borderRadius: '8px', color: '#f5f5f4', fontSize: '12px' }}
                   itemStyle={{ color: '#fed7aa' }}
                 />
@@ -340,7 +325,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
                   ))}
                 </Pie>
                 <Tooltip 
-                  formatter={(val: any) => [`${profile.currency}${Number(val).toLocaleString()}`, 'Revenue']}
+                  formatter={(val) => [`${profile.currency}${Number(val).toLocaleString()}`, 'Revenue']}
                   contentStyle={{ backgroundColor: '#1c1917', borderColor: '#292524', borderRadius: '8px', color: '#f5f5f4', fontSize: '12px' }}
                 />
               </PieChart>

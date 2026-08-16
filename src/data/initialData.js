@@ -1,6 +1,4 @@
-import { FurnitureItem, Order, StockMovement, BusinessProfile } from '../types';
-
-export const initialBusinessProfile: BusinessProfile = {
+export const initialBusinessProfile = {
   storeName: 'Nordic & Oak Furniture Co.',
   tagline: 'Artisan Solid Wood & Contemporary Living',
   address: '742 Design Quarter Blvd, Suite 400, Portland, OR 97201',
@@ -12,7 +10,7 @@ export const initialBusinessProfile: BusinessProfile = {
   standardShippingFee: 35,
 };
 
-export const initialFurnitureCatalog: FurnitureItem[] = [
+export const initialFurnitureCatalog = [
   {
     id: 'furn-001',
     sku: 'SOF-KBH-01',
@@ -267,7 +265,7 @@ export const initialFurnitureCatalog: FurnitureItem[] = [
   },
 ];
 
-export const initialOrders: Order[] = [
+export const initialOrders = [
   {
     id: 'ord-1001',
     orderNumber: 'NORD-2026-1048',
@@ -517,7 +515,7 @@ export const initialOrders: Order[] = [
   },
 ];
 
-export const initialStockMovements: StockMovement[] = [
+export const initialStockMovements = [
   {
     id: 'mov-101',
     furnitureId: 'furn-001',

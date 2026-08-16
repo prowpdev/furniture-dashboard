@@ -1,32 +1,18 @@
-import React, { useState } from 'react';
-import { X, PlusCircle, ArrowUpRight, Package, Truck, FileText } from 'lucide-react';
-import { FurnitureItem, BusinessProfile } from '../types';
+import React, { useState, useEffect } from 'react';
+import { X, PlusCircle, Truck } from 'lucide-react';
 
-interface RestockModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  item: FurnitureItem | null;
-  profile: BusinessProfile;
-  onConfirmRestock: (
-    item: FurnitureItem, 
-    addedUnits: number, 
-    supplierNote: string, 
-    newCostPrice?: number
-  ) => void;
-}
-
-export const RestockModal: React.FC<RestockModalProps> = ({
+export const RestockModal = ({
   isOpen,
   onClose,
   item,
   profile,
   onConfirmRestock,
 }) => {
-  const [quantity, setQuantity] = useState<number>(5);
-  const [costPrice, setCostPrice] = useState<number>(item?.costPrice || 0);
-  const [supplierNote, setSupplierNote] = useState<string>('');
+  const [quantity, setQuantity] = useState(5);
+  const [costPrice, setCostPrice] = useState(item?.costPrice || 0);
+  const [supplierNote, setSupplierNote] = useState('');
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (item) {
       setCostPrice(item.costPrice);
       setQuantity(Math.max(item.minStockAlert * 2, 5));
@@ -40,7 +26,7 @@ export const RestockModal: React.FC<RestockModalProps> = ({
   const projectedStock = currentStock + quantity;
   const totalCost = quantity * costPrice;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     if (quantity <= 0) return;
     onConfirmRestock(item, quantity, supplierNote, costPrice);

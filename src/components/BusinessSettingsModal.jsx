@@ -1,32 +1,23 @@
-import React, { useState } from 'react';
-import { X, Settings, Store, DollarSign, RotateCcw, Check, Sparkles } from 'lucide-react';
-import { BusinessProfile } from '../types';
+import React, { useState, useEffect } from 'react';
+import { X, Settings, RotateCcw, Check } from 'lucide-react';
 
-interface BusinessSettingsModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  profile: BusinessProfile;
-  onSaveProfile: (profile: BusinessProfile) => void;
-  onResetData: () => void;
-}
-
-export const BusinessSettingsModal: React.FC<BusinessSettingsModalProps> = ({
+export const BusinessSettingsModal = ({
   isOpen,
   onClose,
   profile,
   onSaveProfile,
   onResetData,
 }) => {
-  const [formData, setFormData] = useState<BusinessProfile>(profile);
+  const [formData, setFormData] = useState(profile);
   const [savedSuccess, setSavedSuccess] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setFormData(profile);
   }, [profile, isOpen]);
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     onSaveProfile(formData);
     setSavedSuccess(true);

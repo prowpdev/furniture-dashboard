@@ -1,17 +1,6 @@
 import React from 'react';
 import { 
-  DollarSign, 
-  TrendingUp, 
-  Package, 
-  PieChart as PieIcon, 
-  BarChart3, 
-  ArrowUpRight, 
   Download, 
-  Clock, 
-  ShieldAlert, 
-  Sparkles,
-  Layers,
-  ShoppingBag
 } from 'lucide-react';
 import { 
   ResponsiveContainer, 
@@ -21,24 +10,14 @@ import {
   YAxis, 
   Tooltip, 
   CartesianGrid, 
-  Legend, 
   PieChart, 
   Pie, 
   Cell 
 } from 'recharts';
-import { FurnitureItem, Order, BusinessProfile } from '../types';
-
-interface AnalyticsReportsProps {
-  inventory: FurnitureItem[];
-  orders: Order[];
-  profile: BusinessProfile;
-  onExportSalesCSV: () => void;
-  onExportInventoryCSV: () => void;
-}
 
 const PALETTE = ['#d97706', '#059669', '#2563eb', '#7c3aed', '#db2777', '#ca8a04', '#0d9488'];
 
-export const AnalyticsReports: React.FC<AnalyticsReportsProps> = ({
+export const AnalyticsReports = ({
   inventory,
   orders,
   profile,
@@ -54,7 +33,7 @@ export const AnalyticsReports: React.FC<AnalyticsReportsProps> = ({
   const averageOrderValue = activeOrders.length > 0 ? (totalRevenue / activeOrders.length).toFixed(2) : '0';
 
   // Category sales aggregations
-  const catRevenueMap: { [cat: string]: { revenue: number; units: number; profit: number } } = {};
+  const catRevenueMap = {};
   activeOrders.forEach(ord => {
     ord.items.forEach(item => {
       const found = inventory.find(i => i.id === item.furnitureId);
@@ -73,7 +52,7 @@ export const AnalyticsReports: React.FC<AnalyticsReportsProps> = ({
   }));
 
   // Material popularity split
-  const materialMap: { [mat: string]: number } = {};
+  const materialMap = {};
   activeOrders.forEach(ord => {
     ord.items.forEach(item => {
       let simpleMat = 'Solid Oak';
@@ -94,24 +73,8 @@ export const AnalyticsReports: React.FC<AnalyticsReportsProps> = ({
     value: materialMap[mat],
   }));
 
-  // Inventory valuation breakdown
-  const inventoryByRoom: { [room: string]: { cost: number; retail: number; units: number } } = {};
-  inventory.forEach(item => {
-    const room = item.category;
-    if (!inventoryByRoom[room]) inventoryByRoom[room] = { cost: 0, retail: 0, units: 0 };
-    inventoryByRoom[room].cost += item.stock * item.costPrice;
-    inventoryByRoom[room].retail += item.stock * item.retailPrice;
-    inventoryByRoom[room].units += item.stock;
-  });
-
-  const inventoryChartData = Object.keys(inventoryByRoom).map(r => ({
-    room: r,
-    RetailValue: inventoryByRoom[r].retail,
-    CostValue: inventoryByRoom[r].cost,
-  }));
-
   // Velocity / Fast Moving vs Slow Moving
-  const itemSoldCounts: { [id: string]: number } = {};
+  const itemSoldCounts = {};
   activeOrders.forEach(ord => {
     ord.items.forEach(i => {
       itemSoldCounts[i.furnitureId] = (itemSoldCounts[i.furnitureId] || 0) + i.quantity;
@@ -217,7 +180,7 @@ export const AnalyticsReports: React.FC<AnalyticsReportsProps> = ({
                 <XAxis dataKey="category" stroke="#78716c" fontSize={11} angle={-15} textAnchor="end" />
                 <YAxis stroke="#78716c" fontSize={11} tickFormatter={(v) => `$${v}`} />
                 <Tooltip 
-                  formatter={(val: any) => [`${profile.currency}${Number(val).toLocaleString()}`, '']}
+                  formatter={(val) => [`${profile.currency}${Number(val).toLocaleString()}`, '']}
                   contentStyle={{ backgroundColor: '#1c1917', borderColor: '#292524', borderRadius: '8px', color: '#f5f5f4', fontSize: '12px' }}
                 />
                 <Bar dataKey="Revenue" fill="#d97706" radius={[4, 4, 0, 0]} />
@@ -243,14 +206,14 @@ export const AnalyticsReports: React.FC<AnalyticsReportsProps> = ({
                   cy="50%"
                   outerRadius={80}
                   dataKey="value"
-                  label={({ name, percent }: any) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
                 >
                   {materialPieData.map((entry, index) => (
                     <Cell key={`mat-${index}`} fill={PALETTE[index % PALETTE.length]} />
                   ))}
                 </Pie>
                 <Tooltip 
-                  formatter={(val: any) => [`${profile.currency}${Number(val).toLocaleString()}`, 'Revenue']}
+                  formatter={(val) => [`${profile.currency}${Number(val).toLocaleString()}`, 'Revenue']}
                   contentStyle={{ backgroundColor: '#1c1917', borderColor: '#292524', borderRadius: '8px', color: '#f5f5f4', fontSize: '12px' }}
                 />
               </PieChart>

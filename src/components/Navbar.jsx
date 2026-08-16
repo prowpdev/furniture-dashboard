@@ -7,25 +7,12 @@ import {
   History, 
   PlusCircle, 
   ShoppingCart,
-  AlertTriangle,
   Settings,
   Download,
   Store
 } from 'lucide-react';
-import { BusinessProfile } from '../types';
 
-interface NavbarProps {
-  activeTab: 'overview' | 'inventory' | 'sales' | 'pos' | 'analytics' | 'movements';
-  setActiveTab: (tab: 'overview' | 'inventory' | 'sales' | 'pos' | 'analytics' | 'movements') => void;
-  lowStockCount: number;
-  onNewSaleClick: () => void;
-  onAddProductClick: () => void;
-  onSettingsClick: () => void;
-  onExportClick: () => void;
-  businessProfile: BusinessProfile;
-}
-
-export const Navbar: React.FC<NavbarProps> = ({
+export const Navbar = ({
   activeTab,
   setActiveTab,
   lowStockCount,

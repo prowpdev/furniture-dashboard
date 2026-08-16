@@ -1,14 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Sparkles, Upload, DollarSign, Box, ShieldCheck, Tag } from 'lucide-react';
-import { FurnitureItem, BusinessProfile } from '../types';
-
-interface ProductModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSave: (item: FurnitureItem) => void;
-  editingItem: FurnitureItem | null;
-  profile: BusinessProfile;
-}
+import { X, DollarSign, Box } from 'lucide-react';
 
 const SAMPLE_FURNITURE_IMAGES = [
   { label: 'Green Velvet Sofa', url: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=800&q=80' },
@@ -22,14 +13,14 @@ const SAMPLE_FURNITURE_IMAGES = [
   { label: 'Outdoor Teak Lounge', url: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80' },
 ];
 
-export const ProductModal: React.FC<ProductModalProps> = ({
+export const ProductModal = ({
   isOpen,
   onClose,
   onSave,
   editingItem,
   profile,
 }) => {
-  const [formData, setFormData] = useState<Partial<FurnitureItem>>({
+  const [formData, setFormData] = useState({
     name: '',
     sku: '',
     category: 'Living Room',
@@ -84,8 +75,8 @@ export const ProductModal: React.FC<ProductModalProps> = ({
   const profitMargin = retail > 0 ? (((retail - cost) / retail) * 100).toFixed(1) : '0';
   const profitAmt = retail - cost;
 
-  const handleCategoryChange = (cat: any) => {
-    const prefixMap: any = {
+  const handleCategoryChange = (cat) => {
+    const prefixMap = {
       'Living Room': 'LIV',
       'Bedroom': 'BED',
       'Dining Room': 'DIN',
@@ -103,25 +94,25 @@ export const ProductModal: React.FC<ProductModalProps> = ({
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     if (!formData.name || !formData.sku) return;
 
     const stock = Number(formData.stock) || 0;
     const minAlert = Number(formData.minStockAlert) || 2;
     
-    let status: 'in_stock' | 'low_stock' | 'out_of_stock' | 'discontinued' = 'in_stock';
+    let status = 'in_stock';
     if (stock <= 0) {
       status = 'out_of_stock';
     } else if (stock <= minAlert) {
       status = 'low_stock';
     }
 
-    const item: FurnitureItem = {
+    const item = {
       id: editingItem ? editingItem.id : `furn-${Date.now()}`,
       sku: formData.sku || 'FURN-001',
       name: formData.name || 'Untitled Furniture',
-      category: formData.category as any || 'Living Room',
+      category: formData.category || 'Living Room',
       material: formData.material || 'Solid Wood',
       finish: formData.finish || 'Natural',
       stock: stock,
@@ -337,7 +328,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                   type="number"
                   placeholder="W"
                   value={formData.dimensions?.width}
-                  onChange={e => setFormData({ ...formData, dimensions: { ...formData.dimensions!, width: Number(e.target.value) } })}
+                  onChange={e => setFormData({ ...formData, dimensions: { ...formData.dimensions, width: Number(e.target.value) } })}
                   className="px-2 py-1.5 text-xs rounded border border-stone-300"
                   title="Width in cm"
                 />
@@ -345,7 +336,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                   type="number"
                   placeholder="D"
                   value={formData.dimensions?.depth}
-                  onChange={e => setFormData({ ...formData, dimensions: { ...formData.dimensions!, depth: Number(e.target.value) } })}
+                  onChange={e => setFormData({ ...formData, dimensions: { ...formData.dimensions, depth: Number(e.target.value) } })}
                   className="px-2 py-1.5 text-xs rounded border border-stone-300"
                   title="Depth in cm"
                 />
@@ -353,7 +344,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                   type="number"
                   placeholder="H"
                   value={formData.dimensions?.height}
-                  onChange={e => setFormData({ ...formData, dimensions: { ...formData.dimensions!, height: Number(e.target.value) } })}
+                  onChange={e => setFormData({ ...formData, dimensions: { ...formData.dimensions, height: Number(e.target.value) } })}
                   className="px-2 py-1.5 text-xs rounded border border-stone-300"
                   title="Height in cm"
                 />

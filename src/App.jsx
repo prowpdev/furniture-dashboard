@@ -13,7 +13,6 @@ import {
   exportInventoryAsCSV,
   exportSalesAsCSV
 } from './utils/storage';
-import { FurnitureItem, Order, StockMovement, BusinessProfile } from './types';
 import { Navbar } from './components/Navbar';
 import { DashboardOverview } from './components/DashboardOverview';
 import { InventoryManager } from './components/InventoryManager';
@@ -25,38 +24,38 @@ import { RestockModal } from './components/RestockModal';
 import { ProductTagModal } from './components/ProductTagModal';
 import { InvoiceModal } from './components/InvoiceModal';
 import { BusinessSettingsModal } from './components/BusinessSettingsModal';
-import { CheckCircle2, AlertCircle, Sparkles } from 'lucide-react';
+import { CheckCircle2, AlertCircle } from 'lucide-react';
 
 export default function App() {
   // Primary State loaded from persistent storage
-  const [inventory, setInventory] = useState<FurnitureItem[]>(() => loadInventory());
-  const [orders, setOrders] = useState<Order[]>(() => loadOrders());
-  const [movements, setMovements] = useState<StockMovement[]>(() => loadMovements());
-  const [businessProfile, setBusinessProfile] = useState<BusinessProfile>(() => loadBusinessProfile());
+  const [inventory, setInventory] = useState(() => loadInventory());
+  const [orders, setOrders] = useState(() => loadOrders());
+  const [movements, setMovements] = useState(() => loadMovements());
+  const [businessProfile, setBusinessProfile] = useState(() => loadBusinessProfile());
 
   // Navigation State
-  const [activeTab, setActiveTab] = useState<'overview' | 'inventory' | 'sales' | 'pos' | 'analytics' | 'movements'>('overview');
-  const [salesSubTab, setSalesSubTab] = useState<'pos' | 'orders'>('pos');
+  const [activeTab, setActiveTab] = useState('overview');
+  const [salesSubTab, setSalesSubTab] = useState('pos');
 
   // Modal States
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
-  const [editingProduct, setEditingProduct] = useState<FurnitureItem | null>(null);
+  const [editingProduct, setEditingProduct] = useState(null);
 
   const [isRestockModalOpen, setIsRestockModalOpen] = useState(false);
-  const [restockingItem, setRestockingItem] = useState<FurnitureItem | null>(null);
+  const [restockingItem, setRestockingItem] = useState(null);
 
   const [isTagModalOpen, setIsTagModalOpen] = useState(false);
-  const [tagItem, setTagItem] = useState<FurnitureItem | null>(null);
+  const [tagItem, setTagItem] = useState(null);
 
   const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false);
-  const [invoiceOrder, setInvoiceOrder] = useState<Order | null>(null);
+  const [invoiceOrder, setInvoiceOrder] = useState(null);
 
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
 
   // Toast notifications
-  const [toastMessage, setToastMessage] = useState<{ type: 'success' | 'info' | 'warning'; text: string } | null>(null);
+  const [toastMessage, setToastMessage] = useState(null);
 
-  const showToast = (text: string, type: 'success' | 'info' | 'warning' = 'success') => {
+  const showToast = (text, type = 'success') => {
     setToastMessage({ text, type });
     setTimeout(() => {
       setToastMessage(null);
@@ -81,7 +80,7 @@ export default function App() {
   }, [businessProfile]);
 
   // Inventory Handlers
-  const handleSaveProduct = (item: FurnitureItem) => {
+  const handleSaveProduct = (item) => {
     setInventory(prev => {
       const exists = prev.find(i => i.id === item.id);
       if (exists) {
@@ -89,7 +88,7 @@ export default function App() {
       } else {
         // Log movement for initial stock
         if (item.stock > 0) {
-          const newMovement: StockMovement = {
+          const newMovement = {
             id: `mov-${Date.now()}`,
             furnitureId: item.id,
             sku: item.sku,
@@ -111,24 +110,24 @@ export default function App() {
     setEditingProduct(null);
   };
 
-  const handleDeleteProduct = (itemId: string) => {
+  const handleDeleteProduct = (itemId) => {
     const item = inventory.find(i => i.id === itemId);
     setInventory(prev => prev.filter(i => i.id !== itemId));
-    showToast(`Removed "${item?.name || 'Item'}" from catalog.`, 'info');
+    showToast(`Removed "${item?.name || 'Item'}" from catalog.", 'info`);
   };
 
-  const handleQuickStockChange = (itemId: string, delta: number) => {
+  const handleQuickStockChange = (itemId, delta) => {
     const item = inventory.find(i => i.id === itemId);
     if (!item) return;
 
     const newStock = Math.max(0, item.stock + delta);
     if (newStock === item.stock) return;
 
-    let newStatus: FurnitureItem['status'] = 'in_stock';
+    let newStatus = 'in_stock';
     if (newStock === 0) newStatus = 'out_of_stock';
     else if (newStock <= item.minStockAlert) newStatus = 'low_stock';
 
-    const updatedItem: FurnitureItem = {
+    const updatedItem = {
       ...item,
       stock: newStock,
       status: newStatus,
@@ -137,12 +136,12 @@ export default function App() {
     setInventory(prev => prev.map(i => i.id === itemId ? updatedItem : i));
 
     // Log movement
-    const newMovement: StockMovement = {
+    const newMovement = {
       id: `mov-${Date.now()}`,
       furnitureId: item.id,
       sku: item.sku,
       name: item.name,
-      type: delta > 0 ? 'adjustment' : 'adjustment',
+      type: 'adjustment',
       quantityChange: delta,
       previousStock: item.stock,
       newStock: newStock,
@@ -155,17 +154,17 @@ export default function App() {
   };
 
   const handleConfirmRestock = (
-    item: FurnitureItem, 
-    addedUnits: number, 
-    supplierNote: string, 
-    newCostPrice?: number
+    item, 
+    addedUnits, 
+    supplierNote, 
+    newCostPrice
   ) => {
     const prevStock = item.stock;
     const newStock = prevStock + addedUnits;
-    let newStatus: FurnitureItem['status'] = 'in_stock';
+    let newStatus = 'in_stock';
     if (newStock <= item.minStockAlert) newStatus = 'low_stock';
 
-    const updatedItem: FurnitureItem = {
+    const updatedItem = {
       ...item,
       stock: newStock,
       status: newStatus,
@@ -174,7 +173,7 @@ export default function App() {
 
     setInventory(prev => prev.map(i => i.id === item.id ? updatedItem : i));
 
-    const newMovement: StockMovement = {
+    const newMovement = {
       id: `mov-${Date.now()}`,
       furnitureId: item.id,
       sku: item.sku,
@@ -192,9 +191,9 @@ export default function App() {
   };
 
   // Sales Handlers
-  const handleCompleteSale = (newOrder: Order) => {
+  const handleCompleteSale = (newOrder) => {
     // 1. Deduct stock for all items
-    const newMovements: StockMovement[] = [];
+    const newMovements = [];
     const updatedInventory = [...inventory];
 
     newOrder.items.forEach(orderItem => {
@@ -204,7 +203,7 @@ export default function App() {
         const prevStock = item.stock;
         const newStock = Math.max(0, prevStock - orderItem.quantity);
         
-        let newStatus: FurnitureItem['status'] = 'in_stock';
+        let newStatus = 'in_stock';
         if (newStock === 0) newStatus = 'out_of_stock';
         else if (newStock <= item.minStockAlert) newStatus = 'low_stock';
 
@@ -240,19 +239,19 @@ export default function App() {
     showToast(`Sale confirmed! Order #${newOrder.orderNumber} recorded and inventory deducted.`, 'success');
   };
 
-  const handleUpdateOrderStatus = (orderId: string, newStatus: Order['orderStatus']) => {
+  const handleUpdateOrderStatus = (orderId, newStatus) => {
     setOrders(prev => prev.map(o => o.id === orderId ? { ...o, orderStatus: newStatus } : o));
     showToast(`Order status updated to "${newStatus.replace('_', ' ')}".`, 'info');
   };
 
-  const handleCancelOrder = (orderId: string) => {
+  const handleCancelOrder = (orderId) => {
     const order = orders.find(o => o.id === orderId);
     if (!order || order.orderStatus === 'cancelled') return;
 
     if (confirm(`Are you sure you want to cancel Order #${order.orderNumber}? This will restore the items back to inventory.`)) {
       // Restore inventory items
       const updatedInventory = [...inventory];
-      const returnMovements: StockMovement[] = [];
+      const returnMovements = [];
 
       order.items.forEach(orderItem => {
         const idx = updatedInventory.findIndex(i => i.id === orderItem.furnitureId);
@@ -261,7 +260,7 @@ export default function App() {
           const prevStock = item.stock;
           const newStock = prevStock + orderItem.quantity;
           
-          let newStatus: FurnitureItem['status'] = 'in_stock';
+          let newStatus = 'in_stock';
           if (newStock <= item.minStockAlert) newStatus = 'low_stock';
 
           updatedInventory[idx] = {

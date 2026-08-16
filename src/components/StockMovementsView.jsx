@@ -1,16 +1,8 @@
 import React, { useState } from 'react';
-import { History, Search, ArrowDownRight, ArrowUpRight, Filter, Download, Box, RefreshCw } from 'lucide-react';
-import { StockMovement, BusinessProfile } from '../types';
+import { History, Search, ArrowDownRight, ArrowUpRight } from 'lucide-react';
 
-interface StockMovementsViewProps {
-  movements: StockMovement[];
-  profile: BusinessProfile;
-  onClearLogs?: () => void;
-}
-
-export const StockMovementsView: React.FC<StockMovementsViewProps> = ({
+export const StockMovementsView = ({
   movements,
-  profile,
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('All');

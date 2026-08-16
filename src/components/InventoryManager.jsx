@@ -1,38 +1,20 @@
 import React, { useState } from 'react';
 import { 
   Search, 
-  Filter, 
   Plus, 
   LayoutGrid, 
   Table as TableIcon, 
-  AlertCircle, 
   Truck, 
   Edit, 
   Trash2, 
   Tag, 
-  ArrowUpDown,
-  PlusCircle,
-  MinusCircle,
-  Sparkles,
-  Download,
-  CheckCircle2,
-  Box
+  PlusCircle, 
+  MinusCircle, 
+  Download, 
+  Box 
 } from 'lucide-react';
-import { FurnitureItem, BusinessProfile } from '../types';
 
-interface InventoryManagerProps {
-  inventory: FurnitureItem[];
-  profile: BusinessProfile;
-  onAddProduct: () => void;
-  onEditProduct: (item: FurnitureItem) => void;
-  onRestockProduct: (item: FurnitureItem) => void;
-  onPrintTag: (item: FurnitureItem) => void;
-  onDeleteProduct: (itemId: string) => void;
-  onQuickStockChange: (itemId: string, delta: number) => void;
-  onExportCSV: () => void;
-}
-
-export const InventoryManager: React.FC<InventoryManagerProps> = ({
+export const InventoryManager = ({
   inventory,
   profile,
   onAddProduct,
@@ -44,10 +26,10 @@ export const InventoryManager: React.FC<InventoryManagerProps> = ({
   onExportCSV,
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string>('All');
-  const [selectedStatus, setSelectedStatus] = useState<string>('All');
-  const [sortBy, setSortBy] = useState<'name' | 'stock_asc' | 'stock_desc' | 'price_desc' | 'margin_desc'>('name');
-  const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
+  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [selectedStatus, setSelectedStatus] = useState('All');
+  const [sortBy, setSortBy] = useState('name');
+  const [viewMode, setViewMode] = useState('grid');
 
   const categories = ['All', 'Living Room', 'Dining Room', 'Bedroom', 'Home Office', 'Lighting & Accents', 'Outdoor'];
 
@@ -145,7 +127,7 @@ export const InventoryManager: React.FC<InventoryManagerProps> = ({
 
             <select
               value={sortBy}
-              onChange={e => setSortBy(e.target.value as any)}
+              onChange={e => setSortBy(e.target.value)}
               className="px-3 py-2 rounded-xl border border-stone-200 bg-stone-50 text-stone-700 focus:outline-none focus:ring-2 focus:ring-amber-500 font-medium"
             >
               <option value="name">Sort: Name (A-Z)</option>

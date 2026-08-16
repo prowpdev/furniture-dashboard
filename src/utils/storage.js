@@ -1,4 +1,3 @@
-import { FurnitureItem, Order, StockMovement, BusinessProfile } from '../types';
 import { initialFurnitureCatalog, initialOrders, initialStockMovements, initialBusinessProfile } from '../data/initialData';
 
 const INVENTORY_KEY = 'furn_inventory_data_v1';
@@ -6,7 +5,7 @@ const ORDERS_KEY = 'furn_orders_data_v1';
 const MOVEMENTS_KEY = 'furn_movements_data_v1';
 const PROFILE_KEY = 'furn_profile_data_v1';
 
-export const loadInventory = (): FurnitureItem[] => {
+export const loadInventory = () => {
   try {
     const saved = localStorage.getItem(INVENTORY_KEY);
     if (saved) {
@@ -19,7 +18,7 @@ export const loadInventory = (): FurnitureItem[] => {
   return initialFurnitureCatalog;
 };
 
-export const saveInventory = (items: FurnitureItem[]) => {
+export const saveInventory = (items) => {
   try {
     localStorage.setItem(INVENTORY_KEY, JSON.stringify(items));
   } catch (e) {
@@ -27,7 +26,7 @@ export const saveInventory = (items: FurnitureItem[]) => {
   }
 };
 
-export const loadOrders = (): Order[] => {
+export const loadOrders = () => {
   try {
     const saved = localStorage.getItem(ORDERS_KEY);
     if (saved) {
@@ -40,7 +39,7 @@ export const loadOrders = (): Order[] => {
   return initialOrders;
 };
 
-export const saveOrders = (orders: Order[]) => {
+export const saveOrders = (orders) => {
   try {
     localStorage.setItem(ORDERS_KEY, JSON.stringify(orders));
   } catch (e) {
@@ -48,7 +47,7 @@ export const saveOrders = (orders: Order[]) => {
   }
 };
 
-export const loadMovements = (): StockMovement[] => {
+export const loadMovements = () => {
   try {
     const saved = localStorage.getItem(MOVEMENTS_KEY);
     if (saved) {
@@ -61,7 +60,7 @@ export const loadMovements = (): StockMovement[] => {
   return initialStockMovements;
 };
 
-export const saveMovements = (movements: StockMovement[]) => {
+export const saveMovements = (movements) => {
   try {
     localStorage.setItem(MOVEMENTS_KEY, JSON.stringify(movements));
   } catch (e) {
@@ -69,7 +68,7 @@ export const saveMovements = (movements: StockMovement[]) => {
   }
 };
 
-export const loadBusinessProfile = (): BusinessProfile => {
+export const loadBusinessProfile = () => {
   try {
     const saved = localStorage.getItem(PROFILE_KEY);
     if (saved) {
@@ -81,7 +80,7 @@ export const loadBusinessProfile = (): BusinessProfile => {
   return initialBusinessProfile;
 };
 
-export const saveBusinessProfile = (profile: BusinessProfile) => {
+export const saveBusinessProfile = (profile) => {
   try {
     localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
   } catch (e) {
@@ -96,7 +95,7 @@ export const resetToSampleData = () => {
   localStorage.setItem(PROFILE_KEY, JSON.stringify(initialBusinessProfile));
 };
 
-export const exportDataAsJSON = (inventory: FurnitureItem[], orders: Order[], movements: StockMovement[], profile: BusinessProfile) => {
+export const exportDataAsJSON = (inventory, orders, movements, profile) => {
   const data = {
     exportedAt: new Date().toISOString(),
     profile,
@@ -113,7 +112,7 @@ export const exportDataAsJSON = (inventory: FurnitureItem[], orders: Order[], mo
   downloadAnchor.remove();
 };
 
-export const exportInventoryAsCSV = (inventory: FurnitureItem[]) => {
+export const exportInventoryAsCSV = (inventory) => {
   const headers = ['SKU', 'Name', 'Category', 'Material', 'Stock', 'MinAlert', 'CostPrice', 'RetailPrice', 'MarginPct', 'Status', 'Supplier'];
   const rows = inventory.map(item => {
     const margin = item.retailPrice > 0 ? (((item.retailPrice - item.costPrice) / item.retailPrice) * 100).toFixed(1) : '0';
@@ -142,7 +141,7 @@ export const exportInventoryAsCSV = (inventory: FurnitureItem[]) => {
   link.remove();
 };
 
-export const exportSalesAsCSV = (orders: Order[]) => {
+export const exportSalesAsCSV = (orders) => {
   const headers = ['OrderNumber', 'Date', 'Customer', 'Phone', 'ItemsCount', 'Subtotal', 'Discount', 'Tax', 'DeliveryFee', 'Total', 'Profit', 'PaymentMethod', 'OrderStatus'];
   const rows = orders.map(o => {
     return [

@@ -1,15 +1,7 @@
 import React from 'react';
-import { X, Printer, Tag, Sparkles, CheckCircle2 } from 'lucide-react';
-import { FurnitureItem, BusinessProfile } from '../types';
+import { X, Printer, Tag } from 'lucide-react';
 
-interface ProductTagModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  item: FurnitureItem | null;
-  profile: BusinessProfile;
-}
-
-export const ProductTagModal: React.FC<ProductTagModalProps> = ({
+export const ProductTagModal = ({
   isOpen,
   onClose,
   item,

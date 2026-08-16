@@ -1,15 +1,7 @@
 import React from 'react';
-import { X, Printer, Download, CheckCircle2, Shield, Truck, Calendar, Store } from 'lucide-react';
-import { Order, BusinessProfile } from '../types';
+import { X, Printer, Shield, Truck, Store } from 'lucide-react';
 
-interface InvoiceModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  order: Order | null;
-  profile: BusinessProfile;
-}
-
-export const InvoiceModal: React.FC<InvoiceModalProps> = ({
+export const InvoiceModal = ({
   isOpen,
   onClose,
   order,

@@ -5,37 +5,14 @@ import {
   Plus, 
   Minus, 
   Trash2, 
-  DollarSign, 
-  Truck, 
-  User, 
-  Calendar, 
-  CreditCard, 
   CheckCircle2, 
   FileText, 
   Package, 
-  Sparkles, 
   AlertCircle,
-  Clock,
-  ArrowRight,
-  Filter,
   Download
 } from 'lucide-react';
-import { FurnitureItem, Order, OrderItem, BusinessProfile } from '../types';
 
-interface SalesManagerProps {
-  inventory: FurnitureItem[];
-  orders: Order[];
-  profile: BusinessProfile;
-  activeSubTab: 'pos' | 'orders';
-  setActiveSubTab: (tab: 'pos' | 'orders') => void;
-  onCompleteSale: (newOrder: Order) => void;
-  onUpdateOrderStatus: (orderId: string, newStatus: Order['orderStatus']) => void;
-  onCancelOrder: (orderId: string) => void;
-  onViewInvoice: (order: Order) => void;
-  onExportOrdersCSV: () => void;
-}
-
-export const SalesManager: React.FC<SalesManagerProps> = ({
+export const SalesManager = ({
   inventory,
   orders,
   profile,
@@ -43,32 +20,31 @@ export const SalesManager: React.FC<SalesManagerProps> = ({
   setActiveSubTab,
   onCompleteSale,
   onUpdateOrderStatus,
-  onCancelOrder,
   onViewInvoice,
   onExportOrdersCSV,
 }) => {
   // POS State
   const [catalogSearch, setCatalogSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
-  const [cart, setCart] = useState<OrderItem[]>([]);
+  const [cart, setCart] = useState([]);
   
   // Customer details in POS
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
   const [customerEmail, setCustomerEmail] = useState('');
   const [deliveryAddress, setDeliveryAddress] = useState('');
-  const [city, setCity] = useState('Portland');
-  const [postalCode, setPostalCode] = useState('97201');
+  const [city] = useState('Portland');
+  const [postalCode] = useState('97201');
   const [deliveryNotes, setDeliveryNotes] = useState('');
-  const [deliveryType, setDeliveryType] = useState<'pickup' | 'standard' | 'white_glove'>('white_glove');
+  const [deliveryType, setDeliveryType] = useState('white_glove');
   const [deliveryDate, setDeliveryDate] = useState(() => {
     const d = new Date();
     d.setDate(d.getDate() + 3);
     return d.toISOString().slice(0, 10);
   });
-  const [paymentMethod, setPaymentMethod] = useState<'credit_card' | 'bank_transfer' | 'cash' | 'financing'>('credit_card');
-  const [discountAmount, setDiscountAmount] = useState<number>(0);
-  const [posError, setPosError] = useState<string | null>(null);
+  const [paymentMethod, setPaymentMethod] = useState('credit_card');
+  const [discountAmount, setDiscountAmount] = useState(0);
+  const [posError, setPosError] = useState(null);
 
   // Orders List State
   const [orderSearch, setOrderSearch] = useState('');
@@ -87,7 +63,7 @@ export const SalesManager: React.FC<SalesManagerProps> = ({
   });
 
   // Cart operations
-  const addToCart = (item: FurnitureItem) => {
+  const addToCart = (item) => {
     setPosError(null);
     if (item.stock <= 0) {
       setPosError(`${item.name} is currently out of stock.`);
@@ -106,7 +82,7 @@ export const SalesManager: React.FC<SalesManagerProps> = ({
           : i
         );
       } else {
-        const newItem: OrderItem = {
+        const newItem = {
           furnitureId: item.id,
           sku: item.sku,
           name: item.name,
@@ -122,7 +98,7 @@ export const SalesManager: React.FC<SalesManagerProps> = ({
     });
   };
 
-  const updateCartQuantity = (furnitureId: string, newQty: number) => {
+  const updateCartQuantity = (furnitureId, newQty) => {
     setPosError(null);
     const item = inventory.find(i => i.id === furnitureId);
     if (!item) return;
@@ -143,7 +119,7 @@ export const SalesManager: React.FC<SalesManagerProps> = ({
     ));
   };
 
-  const removeFromCart = (furnitureId: string) => {
+  const removeFromCart = (furnitureId) => {
     setCart(prev => prev.filter(i => i.furnitureId !== furnitureId));
   };
 
@@ -168,7 +144,7 @@ export const SalesManager: React.FC<SalesManagerProps> = ({
   const orderProfit = Number((cartTotal - cartCostTotal - taxAmount).toFixed(2));
 
   // Process and finalize sale
-  const handleProcessSale = (e: React.FormEvent) => {
+  const handleProcessSale = (e) => {
     e.preventDefault();
     if (cart.length === 0) {
       setPosError('Please add at least one furniture item to the sale.');
@@ -189,7 +165,7 @@ export const SalesManager: React.FC<SalesManagerProps> = ({
     }
 
     const orderNum = `NORD-2026-${Math.floor(1050 + orders.length + Math.random() * 100)}`;
-    const newOrder: Order = {
+    const newOrder = {
       id: `ord-${Date.now()}`,
       orderNumber: orderNum,
       customer: {
@@ -553,7 +529,7 @@ export const SalesManager: React.FC<SalesManagerProps> = ({
                     <label className="block text-[10px] font-semibold text-stone-600 uppercase">Payment Method</label>
                     <select
                       value={paymentMethod}
-                      onChange={e => setPaymentMethod(e.target.value as any)}
+                      onChange={e => setPaymentMethod(e.target.value)}
                       className="w-full px-2.5 py-1.5 text-xs rounded-lg border border-stone-300 bg-white"
                     >
                       <option value="credit_card">Credit Card (POS)</option>
@@ -696,7 +672,7 @@ export const SalesManager: React.FC<SalesManagerProps> = ({
                     <div className="flex items-center space-x-2.5">
                       <select
                         value={order.orderStatus}
-                        onChange={e => onUpdateOrderStatus(order.id, e.target.value as any)}
+                        onChange={e => onUpdateOrderStatus(order.id, e.target.value)}
                         className={`text-xs font-semibold px-3 py-1.5 rounded-lg border ${
                           order.orderStatus === 'delivered' ? 'bg-emerald-50 text-emerald-800 border-emerald-300' :
                           order.orderStatus === 'in_transit' ? 'bg-blue-50 text-blue-800 border-blue-300' :
