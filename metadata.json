@@ -1,0 +1,6 @@
+{
+  "name": "Furniture Inventory & Sales Dashboard",
+  "description": "Comprehensive inventory tracking, point-of-sale order management, restock alerts, and financial analytics for furniture businesses.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
